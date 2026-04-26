@@ -1,0 +1,1 @@
+print("Feed collector worker started")
