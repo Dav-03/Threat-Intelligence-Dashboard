@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: threatuser
+      POSTGRES_PASSWORD: threatpass
+      POSTGRES_DB: threatdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://threatuser:threatpass@postgres:5432/threatdb
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./api:/app
+
+  worker:
+    build: ./workers/feed_collector
+    environment:
+      DATABASE_URL: postgresql://threatuser:threatpass@postgres:5432/threatdb
+      VIRUSTOTAL_API_KEY: ${VIRUSTOTAL_API_KEY}
+      OTX_API_KEY: ${OTX_API_KEY}
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
