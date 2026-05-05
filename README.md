@@ -89,7 +89,7 @@ This applies all database migrations and seeds 100 fake IOC records for local de
 | `alerts` | Generated alerts linked to IOCs through a foreign key |
 | `users` | Dashboard user accounts with hashed passwords |
  
-## Development Notes
+## Side Note
 - You must be in the `api/` directory with the virtual environment activated when trying to run Alembic migrations 
 - The seed.py script populates the IoC table with randomized data from the Faker library which is used for building the frontend before the feed collector is working
 - Windows environment was used for this project
