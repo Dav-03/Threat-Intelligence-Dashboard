@@ -34,6 +34,7 @@ services:
       DATABASE_URL: postgresql://threatuser:threatpass@postgres:5432/threatdb
       VIRUSTOTAL_API_KEY: ${VIRUSTOTAL_API_KEY}
       OTX_API_KEY: ${OTX_API_KEY}
+      SHODAN_API_KEY: ${SHODAN_API_KEY}
     depends_on:
       - postgres
       - redis
