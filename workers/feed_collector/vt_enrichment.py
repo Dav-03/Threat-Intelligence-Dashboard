@@ -18,9 +18,13 @@ def check_ip(ip_Address: str) -> dict:
     response = requests.get(URL, headers=headers)
 
     if response.status_code == 404:
-        return f"Error: IP Address was not found"
+        return {
+            "Error": f"Error: IP address was not found"
+        }
     elif response.status_code == 429:
-        return f"Error: rate limit hit"
+        return {
+            "Error": f"Error: Rate limit hit"
+        }
     else:
         data = response.json()
         stats = data["data"]["attributes"]["last_analysis_stats"]
@@ -51,9 +55,14 @@ def check_hash(hash: str) -> dict:
     response = requests.get(URL, headers=headers)
 
     if response.status_code == 404:
-        return f"Error: Hash was not found in the Virus Total database"
+        return {
+            "Error": f"Error: Hash was not found in the Virus Total database"
+        }
+
     elif response.status_code == 429:
-        return f"Error: Rate limit hit"
+        return {
+            "Error": f"Error: Rate limit hit"
+        }
     else:
         data = response.json()
         stats = data["data"]["attributes"]["last_analysis_stats"]

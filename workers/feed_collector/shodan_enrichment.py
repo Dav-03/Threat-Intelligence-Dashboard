@@ -1,0 +1,39 @@
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SHODAN_KEY = os.getenv("SHODAN_API_KEY")
+
+def get_shodan_data(ip_address : str) -> dict:
+    URL = f"https://api.shodan.io/shodan/host/{ip_address}"
+    params = {
+        "key": SHODAN_KEY
+    } 
+
+    response = requests.get(URL, params=params)
+
+    if response.status_code == 404:
+        return {
+            "Error": f"Error: IP address was not found"
+        }
+    elif response.status_code == 429:
+        return {
+            "Error": f"Error: Rate limit hit"
+        }
+    else:
+        data = response.json()
+        
+        return {
+            "ip": data.get("ip_str"),
+            "ports": data.get("ports", []),
+            "org": data.get("org"),
+            "country": data.get("country_name"),
+            "city": data.get("city"),
+            "hostname": data.get("hostnames", []),
+            "data": data.get("data", []),
+            "timestamp": data.get("data", ["timestamp"])
+        }
+
+
