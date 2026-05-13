@@ -10,6 +10,7 @@ OTX = os.getenv("OTX_API_KEY")
 otx_Key = OTXv2(OTX)
 
 def get_OTX_data():
+    # Returns a list of raw IoC's by looping through the atest pulses
     ioc_rows = []
     Pulse_List = otx_Key.getall(limit=10)
 

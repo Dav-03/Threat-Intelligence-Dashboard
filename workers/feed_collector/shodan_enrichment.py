@@ -7,6 +7,7 @@ load_dotenv()
 SHODAN_KEY = os.getenv("SHODAN_API_KEY")
 
 def get_shodan_data(ip_address : str) -> dict:
+    # Takes a IP address and returns the ports and services
     URL = f"https://api.shodan.io/shodan/host/{ip_address}"
     params = {
         "key": SHODAN_KEY
@@ -32,8 +33,8 @@ def get_shodan_data(ip_address : str) -> dict:
             "country": data.get("country_name"),
             "city": data.get("city"),
             "hostname": data.get("hostnames", []),
-            "data": data.get("data", []),
-            "timestamp": data.get("data", ["timestamp"])
+            "data": str(data.get("data", [])[:1]),
+            "timestamp": data.get("last_update")
         }
 
 

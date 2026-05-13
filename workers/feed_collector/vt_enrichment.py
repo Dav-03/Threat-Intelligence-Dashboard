@@ -8,6 +8,7 @@ VIRUS_TOTAL_KEY = os.getenv("VIRUSTOTAL_API_KEY")
 
 
 def check_ip(ip_Address: str) -> dict:
+    # Takes a single IoC value so a IP or Hash and returns a score of that value
     URL = f"https://www.virustotal.com/api/v3/ip_addresses/{ip_Address}"
     
     headers = {
