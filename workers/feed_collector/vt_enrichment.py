@@ -20,11 +20,11 @@ def check_ip(ip_Address: str) -> dict:
 
     if response.status_code == 404:
         return {
-            "Error": f"Error: IP address was not found"
+            "error": f"Error: IP address was not found"
         }
     elif response.status_code == 429:
         return {
-            "Error": f"Error: Rate limit hit"
+            "error": f"Error: Rate limit hit"
         }
     else:
         data = response.json()
