@@ -1,7 +1,7 @@
 import os 
 from dotenv import load_dotenv
 from OTXv2 import OTXv2
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 load_dotenv()
@@ -12,7 +12,8 @@ otx_Key = OTXv2(OTX)
 def get_OTX_data():
     # Returns a list of raw IoC's by looping through the atest pulses
     ioc_rows = []
-    Pulse_List = otx_Key.getall(limit=10)
+    since = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%S")
+    Pulse_List = otx_Key.getall(modified_since=since, max_items=5)
 
     for pulse in Pulse_List:
         source = pulse.get("name", "AlienVault OTX")
