@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP, ForeignKey
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import declarative_base, relationship
 
 
@@ -22,11 +23,11 @@ class Feeds(Base):
     __tablename__ = "feeds"
 
     ip = Column(String, primary_key = True)
-    port = Column(Integer)
+    port = Column(ARRAY(Integer))
     org = Column(String)
     country = Column(String)
     city = Column(String)
-    hostname = Column(String)
+    hostname = Column(ARRAY(String))
     data = Column(String)
     timestamp = Column(TIMESTAMP)
 

@@ -45,7 +45,7 @@ def Write_To_feeds(item):
     try:
         existing_item = db.query(Feeds).filter(
             Feeds.ip == item["ip"]
-        )
+        ).first()
 
         if existing_item == None:
             new_item = Feeds(
