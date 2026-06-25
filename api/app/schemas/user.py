@@ -1,6 +1,6 @@
-from pydantic import Basemodel
+from pydantic import BaseModel
 
-class UserBase(Basemodel):
+class UserBase(BaseModel):
     username: str
     email: str
 

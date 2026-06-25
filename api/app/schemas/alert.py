@@ -1,17 +1,17 @@
-from pydantic import Basemodel
+from pydantic import BaseModel
 from datetime import datetime
 
-class AlertBase(Basemodel):
+class AlertBase(BaseModel):
     ioc_id: int
     rule_name: str
     description: str
     severity: str
-    timestamp: str
+    timestamp: datetime
 
 class AlertCreate(AlertBase):
     pass
 
-class FeedResponse(AlertBase):
+class AlertResponse(AlertBase):
     id: int
     timestamp: datetime
 
