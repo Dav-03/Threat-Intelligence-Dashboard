@@ -8,13 +8,11 @@ from app.database import get_db
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 
 @router.get("/", response_model=list[AlertResponse])
-def get_all_feeds(country: str, city: str, db: Session = Depends(get_db)):
+def get_all_alerts(severity: str = None, db: Session = Depends(get_db)):
     
     query = db.query(Alerts)
-    if country:
-        query = query.filter(Alerts.country == country)
-    if city:
-        query = query.filter(Alerts.city == city)
+    if severity:
+        query = query.filter(Alerts.severity == severity)
     
     return query.all()
 

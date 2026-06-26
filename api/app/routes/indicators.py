@@ -26,7 +26,7 @@ def get_single_indicator(id:int, db: Session = Depends(get_db)):
                  .first()
                  )
     
-    if len(indicator) is None:
+    if indicator is None:
         raise HTTPException(status_code=404, detail="Indicator not found")
     
     else:
