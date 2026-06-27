@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from faker import Faker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.models.models import IoC, Feeds, Alerts, Users
+from app.models.models import IoC
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
