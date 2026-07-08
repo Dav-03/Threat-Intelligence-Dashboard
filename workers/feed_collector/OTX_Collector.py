@@ -13,7 +13,8 @@ def get_OTX_data():
     # Returns a list of raw IoC's by looping through the atest pulses
     ioc_rows = []
     since = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%S")
-    Pulse_List = otx_Key.getall(modified_since=since, max_items=5)
+    Pulse_List = otx_Key.getall(modified_since=since, max_items=3)
+    MAX_INDICATORS = 5
 
     for pulse in Pulse_List:
         source = pulse.get("name", "AlienVault OTX")
@@ -23,6 +24,8 @@ def get_OTX_data():
         indicators = pulse.get("indicators", [])
 
         for indicator in indicators:
+            if len(ioc_rows) >= MAX_INDICATORS:
+                return ioc_rows
             ioc = {
                 "type": indicator.get("type"),
                 "value": indicator.get("indicator"),

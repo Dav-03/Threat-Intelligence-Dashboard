@@ -15,17 +15,8 @@ def get_shodan_data(ip_address : str) -> dict:
 
     response = requests.get(URL, params=params)
 
-    if response.status_code == 404:
-        return {
-            "error": f"Error: IP address was not found"
-        }
-    elif response.status_code == 429:
-        return {
-            "error": f"Error: Rate limit hit"
-        }
-    else:
+    if response.status_code == 200:
         data = response.json()
-        
         return {
             "ip": data.get("ip_str"),
             "ports": data.get("ports", []),
@@ -36,5 +27,10 @@ def get_shodan_data(ip_address : str) -> dict:
             "data": str(data.get("data", [])[:1]),
             "timestamp": data.get("last_update")
         }
-
+    elif response.status_code == 404:
+        return {"error": "IP address was not found"}
+    elif response.status_code == 429:
+        return {"error": "Rate limit hit"}
+    else:
+        return {"error": f"Unexpected status code {response.status_code}"}
 

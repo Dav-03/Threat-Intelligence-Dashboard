@@ -16,7 +16,11 @@ def check_ip(ip_Address: str) -> dict:
         "x-apikey": VIRUS_TOTAL_KEY
     }
 
-    response = requests.get(URL, headers=headers)
+    try:
+        response = requests.get(URL, headers=headers, timeout=10)
+    except requests.exceptions.RequestException as e:
+        print(f"VT lookup failed for IP {ip_Address}: {e}")
+        return {"error": f"VT request failed: {e}"}
 
     if response.status_code == 404:
         return {
@@ -53,7 +57,11 @@ def check_hash(hash: str) -> dict:
         "x-apikey": VIRUS_TOTAL_KEY
     }
 
-    response = requests.get(URL, headers=headers)
+    try:
+        response = requests.get(URL, headers=headers, timeout=10)
+    except requests.exceptions.RequestException as e:
+        print(f"VT lookup failed for hash {hash}: {e}")
+        return {"error": f"VT request failed: {e}"}
 
     if response.status_code == 404:
         return {

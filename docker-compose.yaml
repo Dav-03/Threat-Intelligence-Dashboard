@@ -27,6 +27,7 @@ services:
       - redis
     volumes:
       - ./api:/app
+      - /app/venv
 
   worker:
     build: ./workers/feed_collector

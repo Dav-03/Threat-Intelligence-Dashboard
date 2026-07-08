@@ -50,7 +50,7 @@ def Write_To_feeds(item):
         if existing_item == None:
             new_item = Feeds(
                 ip = item["ip"],
-                port = item["port"],
+                port = item["ports"],
                 org = item["org"],
                 country = item["country"],
                 city = item["city"],
@@ -62,7 +62,7 @@ def Write_To_feeds(item):
         
         else:
             existing_item.ip = item["ip"]
-            existing_item.port = item["port"]
+            existing_item.port = item["ports"]
             existing_item.org = item["org"]
             existing_item.country = item["country"]
             existing_item.city = item["city"]

@@ -6,6 +6,21 @@ from apscheduler.schedulers.background import BlockingScheduler
 from datetime import datetime 
 import time
 
+def score_to_severity(ratio: str) -> str:
+    try:
+        malicious, total = ratio.split("/")
+        ratio = int(malicious) / int(total)
+        if ratio == 0:
+            return "low"
+        elif ratio < 0.1:
+            return "medium"
+        elif ratio < 0.3:
+            return "high"
+        else:
+            return "critical"
+    
+    except:
+        return "unknown"
 
 def main():
     print("Feed collector worker started")
@@ -15,7 +30,8 @@ def main():
     print(f"Successfullt got {len(IoC_List)} indicators from OTX")
 
     for IoC in IoC_List:
-        print(f"Processing: {IoC['type']} - {IoC["value"]}")
+        
+        print(f"Processing: {IoC['type']} - {IoC['value']}")
         if IoC["type"].startswith("FileHash"):
             print(f"checking hash with VT")
 
@@ -24,24 +40,22 @@ def main():
             if "error" in Virus_Total_score:
                 pass
             else:
-                IoC["severity"] = Virus_Total_score.get("detection_ratio", IoC["severity"])
+                IoC["severity"] = score_to_severity(Virus_Total_score.get("detection_ratio", "0/1"))
             dup_logic(IoC)
 
         
         elif IoC["type"].startswith("IPv"):
-            print(f"Checking IP with VT")
             Virus_Total_score = check_ip(IoC["value"])
             time.sleep(15)
-            print(f"Checking IP with Shodan")
             Shodan_report = get_shodan_data(IoC["value"])
             time.sleep(15)
             if "error" in Virus_Total_score:
                 pass
             else:
-                IoC["severity"] = Virus_Total_score.get("detection_ratio", IoC["severity"])
+                IoC["severity"] = score_to_severity(Virus_Total_score.get("detection_ratio", "0/1"))
             dup_logic(IoC)
-            Write_To_feeds(Shodan_report)
-
+            if "error" not in Shodan_report:
+                Write_To_feeds(Shodan_report)
         else:
             pass
 

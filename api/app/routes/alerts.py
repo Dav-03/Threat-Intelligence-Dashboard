@@ -1,14 +1,18 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from typing import Annotated
 
 from app.models.models import Alerts
 from app.schemas.alert import AlertResponse, AlertCreate
 from app.database import get_db
+from app.utils.auth import get_current_user
 
 router = APIRouter(prefix="/alerts", tags=["alerts"])
 
+user_dependency = Annotated[dict, Depends(get_current_user)]
+
 @router.get("/", response_model=list[AlertResponse])
-def get_all_alerts(severity: str = None, db: Session = Depends(get_db)):
+def get_all_alerts(user: user_dependency, severity: str = None, db: Session = Depends(get_db)):
     
     query = db.query(Alerts)
     if severity:
@@ -17,7 +21,7 @@ def get_all_alerts(severity: str = None, db: Session = Depends(get_db)):
     return query.all()
 
 @router.post("/", response_model=AlertResponse)
-def create_alert(alert: AlertCreate, db: Session=Depends(get_db)):
+def create_alert(user: user_dependency, alert: AlertCreate, db: Session=Depends(get_db)):
     new_alert = Alerts(
         ioc_id = alert.ioc_id,
         rule_name = alert.rule_name,

@@ -16,3 +16,4 @@ infra/.terraform/
 # OS
 Thumbs.db
 Desktop.ini
+.env

@@ -1,14 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import Annotated
 
 from app.models.models import Feeds
 from app.schemas.feed import FeedResponse
 from app.database import get_db
+from app.utils.auth import get_current_user
 
 router = APIRouter(prefix="/feeds", tags=["feeds"])
 
+user_dependency = Annotated[dict, Depends(get_current_user)]
 @router.get("/", response_model=list[FeedResponse])
-def get_all_feeds(country:str = None, city: str = None, db: Session = Depends(get_db)):
+def get_all_feeds(user: user_dependency, country:str = None, city: str = None, db: Session = Depends(get_db)):
     
     query = db.query(Feeds)
     if country:
@@ -20,7 +23,7 @@ def get_all_feeds(country:str = None, city: str = None, db: Session = Depends(ge
 
 
 @router.get("/{ip}", response_model=FeedResponse)
-def get_single_feed(ip:str, db: Session = Depends(get_db)):
+def get_single_feed(user: user_dependency, ip:str, db: Session = Depends(get_db)):
     feed = (db.query(Feeds)
                  .filter(Feeds.ip == ip)
                  .first()

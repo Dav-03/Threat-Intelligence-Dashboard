@@ -1,15 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from typing import Annotated
 
 from app.models.models import IoC
-from app.schemas.indicator import IndicatorResponse
 from app.database import get_db
+from app.utils.auth import get_current_user
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
+user_dependency = Annotated[dict, Depends(get_current_user)]
+
 @router.get("/summary")
-def get_all_indicators(db: Session = Depends(get_db)):
+def get_all_indicators(user: user_dependency, db: Session = Depends(get_db)):
     total_IoCs = db.query(IoC).count()
 
     severity_rows = (
