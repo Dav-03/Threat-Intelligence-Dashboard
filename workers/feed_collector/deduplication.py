@@ -20,6 +20,9 @@ def dup_logic(item):
             )
 
             db.add(new_item)
+            db.commit()
+            db.refresh(new_item)
+            return new_item.id
         
         else:
             existing_item.type = item["type"]

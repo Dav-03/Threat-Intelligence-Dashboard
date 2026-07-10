@@ -1,4 +1,5 @@
 from deduplication import dup_logic, Write_To_feeds
+from alert_engine import run_alert_engine
 from OTX_Collector import get_OTX_data
 from shodan_enrichment import get_shodan_data
 from vt_enrichment import check_hash, check_ip
@@ -41,7 +42,8 @@ def main():
                 pass
             else:
                 IoC["severity"] = score_to_severity(Virus_Total_score.get("detection_ratio", "0/1"))
-            dup_logic(IoC)
+            ioc_db_id = dup_logic(IoC)
+            run_alert_engine(IoC, ioc_db_id)
 
         
         elif IoC["type"].startswith("IPv"):
@@ -53,7 +55,8 @@ def main():
                 pass
             else:
                 IoC["severity"] = score_to_severity(Virus_Total_score.get("detection_ratio", "0/1"))
-            dup_logic(IoC)
+            ioc_db_id = dup_logic(IoC)
+            run_alert_engine(IoC, ioc_db_id)
             if "error" not in Shodan_report:
                 Write_To_feeds(Shodan_report)
         else:
