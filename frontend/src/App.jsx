@@ -1,18 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Login from './Login.jsx'
+import Dashboard from './Dashboard.jsx'
 
 function App() {
   return (
-    <>
-      <div className="bg-gray-900 min-h-screen flex items-center justify-center">
-        <h1 className="text-teal-400 text-3xl font-bold">
-          Threat Intel Dashboard
-        </h1>
-      </div>
-    </>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
   )
 }
 
