@@ -2,10 +2,6 @@ from database import sessionLocal
 from models import Alerts
 
 def run_alert_engine(ioc: dict, iocId: int):
-    # takes one IOC and its database id
-    # checks it against each rule
-    # writes an alert to Postgres if a rule matches
-    # skips if an alert already exists for this ioc_id
     db = sessionLocal()
     
     try:
@@ -14,7 +10,7 @@ def run_alert_engine(ioc: dict, iocId: int):
         ).first()
         
         if existing_item == None:
-            if ioc["type"].startswith("IPv4") and ioc["severity"] == "critical" or ioc["severity"] == "high":
+            if ioc["type"].startswith("IPv4") and ioc["severity"] in ["high", "critical"]:
                 ruleName = "malicious_ip"
                 new_item = Alerts(
                     ioc_id = iocId,
@@ -25,7 +21,7 @@ def run_alert_engine(ioc: dict, iocId: int):
                 )
                 db.add(new_item)
                 db.commit()  
-            elif ioc["type"].startswith("FileHash") and ioc["severity"] == "critical" or ioc["severity"] == "high":
+            elif ioc["type"].startswith("FileHash") and ioc["severity"] in ["high", "critical"]:
                 ruleName = "malicious_hash"
                 new_item = Alerts(
                     ioc_id = iocId,
@@ -48,29 +44,3 @@ def run_alert_engine(ioc: dict, iocId: int):
     finally:
         db.close()
         
-        
-        
-        
-        
-        
-
-        
-        
-        
-        
-#critical_indicator  → severity == "critical"
-#high_indicator      → severity == "high"  
-#malicious_ip        → type == "IPv4" AND severity in ["high", "critical"]     
-        
-        
-#class Alerts(Base):
-#__tablename__ = "alerts"
-
-#ioc_id = Column(Integer, ForeignKey("iocs.id"))
-#id = Column(Integer, primary_key = True)
-#rule_name = Column(String)
-#description = Column(String)
-#severity = Column(String)
-#timestamp = Column(TIMESTAMP)
-
-#ioc = relationship("IoC", back_populates = "alerts")

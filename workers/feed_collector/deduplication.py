@@ -30,7 +30,8 @@ def dup_logic(item):
             existing_item.source = item["source"]
             existing_item.severity = item["severity"]
             existing_item.timestamp = item["timestamp"]
-        db.commit()
+            db.commit()
+            return existing_item.id
     
     except Exception:
         db.rollback()
