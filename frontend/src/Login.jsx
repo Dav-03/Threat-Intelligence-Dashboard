@@ -25,7 +25,7 @@ function Login() {
                     password: form.password,
                     grant_type: 'password'
                 }),
-                { headers: { 'Content-Type': 'application/x-www-form-urlcoded'}}
+                { headers: { 'Content-Type': 'application/x-www-form-urlencoded'}}
             )
             setToken(response.data.access_token)
             navigate('/dashboard')

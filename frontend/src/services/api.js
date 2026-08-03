@@ -4,9 +4,7 @@ import { getToken } from "./auth"
 const BASE_URL = "http://localhost:8000"
 
 const authHeaders = () => ({
-    headers: {
-        Authorization: `Bearer ${getToken()}`
-    }
+    Authorization: `Bearer ${getToken()}`
 })
 
 export const getIndicators = async (severity = null, type = null) => {
@@ -38,7 +36,7 @@ export const getFeeds = async (country = null, city = null) => {
 export const getStats = async () => {
     const response = await axios.get(
         `${BASE_URL}/stats/summary`,
-        authHeaders()
+        { headers: authHeaders() }
     )
     return response.data
-};
+}
