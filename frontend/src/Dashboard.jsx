@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react"
-import { getStats, getIndicators } from "./services/api"
+import { getStats, getIndicators, getAlerts } from "./services/api"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts"
-
+import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet"
+import "leaflet/dist/leaflet.css"
 
 function Dashboard() {
     const [stats, setStats] = useState(null)
     const [loading, setLoading] = useState(true)
     const [indicators, setIndicators] = useState([])
+    const [alerts, setAlerts] = useState([])
+    const ipIndicators = indicators.filter(ioc => ioc.type === "IPv4")
 
     useEffect(() => {
         getStats()
@@ -20,6 +23,7 @@ function Dashboard() {
     useEffect(() => {
         getStats().then(data => { setStats(data); setLoading(false) })
         getIndicators().then(data => setIndicators(data))
+        getAlerts().then(data => setAlerts(data))
     }, [])
 
     const severityData = stats ? [
@@ -51,7 +55,7 @@ function Dashboard() {
                     </div>
                 </div>
 
-
+                // Chart
                 <BarChart width={500} height={300} data={severityData}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
@@ -59,7 +63,7 @@ function Dashboard() {
                     <Tooltip />
                     <Bar dataKey="count" fill="#e05252" />
                 </BarChart>
-
+                // IOC table
                 <table>
                     <thead>
                         <tr>
@@ -82,6 +86,45 @@ function Dashboard() {
                         ))}
                     </tbody>
                 </table>
+
+                <h2>Recent Alerts</h2>
+                <table>
+                    <thread>
+                        <tr>
+                            <th>Rule</th>
+                            <th>Descriptions</th>
+                            <th>Severity</th>
+                            <th>Timestamps</th>
+                        </tr>
+                    </thread>
+                    <tbody>
+                        {alerts.map(alert => (
+                            <tr key={alert.id}>
+                                <td>{alert.rule_name}</td>
+                                <td>{alert.description}</td>
+                                <td>{alert.severity}</td>
+                                <td>{new Date(alert.timestamp).toLocaleString()}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                <MapContainer center={[20, 0]} zoom={2} style={{ height: "400px", width: "100%" }}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; OpenStreetMap contributors'
+                    />
+                    {ipIndicators.map(ioc => (
+                        <CircleMarker
+                            key={ioc.id}
+                            center={[0, 0]}
+                            radius={6}
+                            color={ioc.severity === "critical" ? "red" : "orange"}
+                        >
+                            <Popup>{ioc.value} — {ioc.severity}</Popup>
+                        </CircleMarker>
+                    ))}
+                </MapContainer>
             </div>
         )
 }
